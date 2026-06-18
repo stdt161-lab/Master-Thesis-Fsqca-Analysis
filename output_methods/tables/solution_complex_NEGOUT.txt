@@ -1,0 +1,21 @@
+
+M1: ~AI_CAP*~CULT*STRUCT*~SIZE + ~AI_CAP*CULT*~STRUCT*~DYN +
+    AI_CAP*CULT*~STRUCT*~SIZE + AI_CAP*~STRUCT*~SIZE*~DYN -> ~OUT
+
+                               inclS   PRI   covS   covU  
+--------------------------------------------------------- 
+1  ~AI_CAP*~CULT*STRUCT*~SIZE  0.788  0.688  0.241  0.136 
+2   ~AI_CAP*CULT*~STRUCT*~DYN  0.763  0.638  0.119  0.035 
+3   AI_CAP*CULT*~STRUCT*~SIZE  0.814  0.697  0.175  0.045 
+4   AI_CAP*~STRUCT*~SIZE*~DYN  0.804  0.695  0.113  0.005 
+--------------------------------------------------------- 
+                           M1  0.789  0.688  0.385 
+
+                               cases 
+------------------------------------ 
+1  ~AI_CAP*~CULT*STRUCT*~SIZE  179,173,177; 142,147,156,3,46
+2   ~AI_CAP*CULT*~STRUCT*~DYN  120; 136
+3   AI_CAP*CULT*~STRUCT*~SIZE  72; 43
+4   AI_CAP*~STRUCT*~SIZE*~DYN  44,19; 72
+------------------------------------ 
+

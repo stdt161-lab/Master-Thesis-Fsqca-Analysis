@@ -224,6 +224,122 @@ plot_solution_venn <- function(sol, outcome_vec, config, prefix = "OUT") {
 }
 
 # ----------------------------------------------------------------------------
+# H. Configuration chart in Fiss (2011) notation -- the canonical fsQCA results
+#    figure. Conditions are rows, sufficient paths are columns. A condition that
+#    is PRESENT in a path is a filled circle; ABSENT is a crossed circle; a
+#    blank means the condition does not appear ("don't care"). A condition is
+#    CORE (large symbol) if it also survives in the parsimonious solution, and
+#    PERIPHERAL (small symbol) if it appears only in the intermediate solution
+#    (Ragin & Fiss, 2008). Per-path consistency and coverage are printed beneath.
+# ----------------------------------------------------------------------------
+.parse_literals <- function(terms) {
+  # Return a data frame: term index, condition, sign (1 present / 0 absent).
+  terms <- terms[!is.na(terms) & nzchar(terms)]
+  if (length(terms) == 0) return(NULL)
+  do.call(rbind, lapply(seq_along(terms), function(i) {
+    lits <- strsplit(terms[i], "\\*")[[1]]
+    do.call(rbind, lapply(lits, function(l) {
+      neg <- startsWith(l, "~")
+      data.frame(term = i, condition = sub("^~", "", l),
+                 present = ifelse(neg, 0L, 1L), stringsAsFactors = FALSE)
+    }))
+  }))
+}
+
+# The QCA intermediate object stores the reduced (parsimonious) expression at the
+# top level; the actual INTERMEDIATE expression and its fit live in $i.sol. Pull
+# the intermediate terms and per-path fit from there, falling back gracefully.
+.intermediate_terms <- function(sol) {
+  if (!is.null(sol$i.sol) && length(sol$i.sol) >= 1) {
+    sub <- sol$i.sol[[1]]
+    ic  <- tryCatch(as.data.frame(sub$IC$incl.cov), error = function(e) NULL)
+    terms <- if (!is.null(ic) && nrow(ic) > 0) rownames(ic) else
+      tryCatch(unlist(sub$solution), error = function(e) NULL)
+    if (!is.null(terms) && length(terms) > 0) return(list(terms = terms, ic = ic))
+  }
+  ic <- tryCatch(as.data.frame(sol$IC$incl.cov), error = function(e) NULL)
+  terms <- if (!is.null(ic) && nrow(ic) > 0) rownames(ic) else
+    tryCatch(sol$solution[[1]], error = function(e) NULL)
+  list(terms = terms, ic = ic)
+}
+
+plot_config_chart <- function(suf, config, prefix = "OUT") {
+  solset <- if (prefix == "OUT") suf$solutions else suf$solutions_neg
+  if (is.null(solset)) return(invisible(NULL))
+  interm <- solset[["intermediate"]]
+  parsim <- solset[["parsimonious"]]
+
+  ext    <- .intermediate_terms(interm)
+  iterms <- ext$terms
+  ic     <- ext$ic
+  if (is.null(iterms) || length(iterms) == 0) return(invisible(NULL))
+  ilit <- .parse_literals(iterms)
+
+  # Core literals = those that also appear in the parsimonious solution.
+  pterms <- tryCatch(parsim$solution[[1]], error = function(e) character(0))
+  plit <- .parse_literals(pterms)
+  core_key <- if (is.null(plit)) character(0) else paste(plit$condition, plit$present)
+
+  conds <- config$conditions
+  grid <- expand.grid(condition = conds, term = seq_along(iterms),
+                      KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+  grid <- merge(grid, ilit, by = c("condition", "term"), all.x = TRUE)
+  grid$state <- ifelse(is.na(grid$present), "blank",
+                 ifelse(grid$present == 1, "present", "absent"))
+  grid$core  <- mapply(function(cd, pr) {
+    if (is.na(pr)) return(FALSE)
+    paste(cd, pr) %in% core_key
+  }, grid$condition, grid$present)
+  grid$size_lab <- ifelse(grid$core, "core", "peripheral")
+
+  # Column labels carry per-path fit.
+  if (!is.null(ic) && nrow(ic) >= length(iterms)) {
+    collab <- sprintf("Path %d\ncons %.2f\ncov %.2f",
+                      seq_along(iterms), ic$inclS[seq_along(iterms)],
+                      ic$covS[seq_along(iterms)])
+  } else {
+    collab <- sprintf("Path %d", seq_along(iterms))
+  }
+  grid$term_lab <- factor(grid$term, levels = seq_along(iterms), labels = collab)
+  grid$condition <- factor(grid$condition, levels = rev(conds))
+
+  pts <- grid[grid$state != "blank", , drop = FALSE]
+  overall <- tryCatch(interm$i.sol[[1]]$IC$sol.incl.cov, error = function(e) NULL)
+  if (is.null(overall)) overall <- tryCatch(interm$IC$sol.incl.cov, error = function(e) NULL)
+  sub <- if (!is.null(overall) && is.data.frame(overall) && nrow(overall) >= 1)
+    sprintf("Intermediate solution: overall consistency %.2f, coverage %.2f",
+            overall$inclS[1], overall$covS[1])
+  else "Intermediate solution"
+
+  # Present = solid circle (shape 19, colour-driven); Absent = circle-with-cross
+  # (shape 13). Symbol size encodes core (large) vs peripheral (small).
+  p <- ggplot(pts, aes(x = term_lab, y = condition)) +
+    geom_point(aes(shape = state, size = size_lab, color = state)) +
+    scale_shape_manual(values = c(present = 19, absent = 13),
+                       labels = c(present = "present", absent = "absent (negated)")) +
+    scale_size_manual(values = c(core = 9, peripheral = 5),
+                      labels = c(core = "core (also in parsimonious)",
+                                 peripheral = "peripheral (intermediate only)")) +
+    scale_color_manual(values = c(present = "black", absent = "grey25"), guide = "none") +
+    scale_y_discrete(drop = FALSE) +
+    labs(title = paste0("Sufficient configurations for ", prefix),
+         subtitle = sub,
+         x = NULL, y = NULL, shape = NULL, size = NULL,
+         caption = "Blank cell = condition does not appear in the path (\"don't care\").") +
+    theme_minimal(base_size = 12) +
+    theme(legend.position = "right",
+          panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(size = 10),
+          plot.caption = element_text(hjust = 0, size = 9),
+          plot.margin = margin(10, 12, 10, 14),
+          axis.text.x = element_text(size = 9)) +
+    guides(size  = guide_legend(order = 1, override.aes = list(shape = 19, color = "black")),
+           shape = guide_legend(order = 2, override.aes = list(size = 5, color = "black")))
+  ggsave(file.path(config$fig_dir, sprintf("H_config_chart_%s.png", prefix)),
+         p, width = max(7, 3.5 + 1.6 * length(iterms)), height = 5, dpi = config$fig_dpi)
+}
+
+# ----------------------------------------------------------------------------
 # Orchestrator for all graphs.
 # ----------------------------------------------------------------------------
 make_all_plots <- function(cal, suf, nec, config) {
@@ -238,6 +354,7 @@ make_all_plots <- function(cal, suf, nec, config) {
   plot_solution_types(suf$solutions, out_vec, config, prefix = "OUT")
   plot_truth_table_heatmap(suf$truth_table, config, prefix = "OUT")
   plot_solution_venn(suf$solutions[[headline]], out_vec, config, prefix = "OUT")
+  plot_config_chart(suf, config, prefix = "OUT")
 
   # Outcome negated
   if (isTRUE(config$analyse_negation) && !is.null(suf$solutions_neg)) {
@@ -247,6 +364,7 @@ make_all_plots <- function(cal, suf, nec, config) {
     plot_solution_types(suf$solutions_neg, neg_vec, config, prefix = "~OUT")
     plot_truth_table_heatmap(suf$truth_table_neg, config, prefix = "~OUT")
     plot_solution_venn(suf$solutions_neg[[headline]], neg_vec, config, prefix = "~OUT")
+    plot_config_chart(suf, config, prefix = "~OUT")
   }
   cat("Figures written to", config$fig_dir, "\n")
 }

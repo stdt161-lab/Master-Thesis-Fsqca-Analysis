@@ -104,7 +104,9 @@ sensitivity_thresholds <- function(cal, config) {
 # and the baseline analysis re-run. Pre-calibrated variables are untouched.
 sensitivity_calibration <- function(data, config) {
   shifts <- config$sensitivity$crossover_shifts
-  base_anchors <- config$anchors
+  # Resolve effective anchors (fixed or percentile-derived) so the crossover
+  # shift applies whichever calibration family a variable uses.
+  base_anchors <- resolve_anchors(data, config)
 
   baseline_cal <- calibrate_data(data, config, anchors = base_anchors)
   base_sol <- .safe_intermediate(baseline_cal, config, config$incl_cut, config$n_cut)

@@ -43,23 +43,33 @@ install.packages(c("QCA", "ggplot2"))
 ## Project structure
 
 ```
-config.R                 # <-- the ONLY file you normally edit
-run_analysis.R           # master script: runs the whole pipeline
+config.R                 # current 4-condition model (AI_CAP, CULT, STRUCT, DYN)
+config_methods.R         # chapter-aligned 5-condition model (adds SIZE; see FINDINGS.md)
+run_analysis.R           # master script; honours CONFIG_FILE=<config> to switch models
+FINDINGS.md              # results write-up + 4-vs-5-condition comparison (read this)
 R/
   01_data_prep.R         # merge the 6 raw files -> data/analysis_data.csv
-  02_calibration.R       # direct-method calibration into fuzzy sets + diagnostics
+  02_calibration.R       # calibration into fuzzy sets (fixed OR percentile anchors)
   03_necessity.R         # necessary-condition analysis (outcome & negation)
   04_sufficiency.R       # truth table + complex/parsimonious/intermediate solutions
-  05_plots.R             # comparison graphs (XY plots, bar charts, heatmaps, Venn)
+  05_plots.R             # graphs: XY plots, bars, heatmaps, Venn, Fiss config chart
   06_sensitivity.R       # robustness: threshold grid + calibration shifts
 data/
   raw/                   # the six source CSVs
   analysis_data.csv      # merged, complete-case dataset (generated)
   calibrated_data.csv    # fuzzy scores (generated)
-output/
+output/                  # results for the 4-condition model
+output_methods/          # results for the chapter-aligned 5-condition model
   tables/                # all results as CSV + full solution printouts (TXT)
   figures/               # all graphs (300 dpi PNG)
   report.txt             # human-readable summary of every step
+```
+
+### Running either model
+
+```r
+Rscript run_analysis.R                              # 4-condition (config.R)
+CONFIG_FILE=config_methods.R Rscript run_analysis.R # 5-condition, chapter-aligned
 ```
 
 ## What the pipeline produces
@@ -79,6 +89,7 @@ output/
 - `E_truthtable_heatmap_*` — configuration map coloured by membership
 - `F_robustness_thresholds.png` — solution stability across `incl.cut` × `n.cut`
 - `G_venn_*` — Venn/set-overlap diagram of the sufficient paths vs the outcome (cases per region, fuzzy membership > 0.5)
+- `H_config_chart_*` — **configuration chart in Fiss (2011) notation** (the headline fsQCA results figure: large = core, small = peripheral, ⊗ = absent, blank = "don't care")
 
 ## Headline results (with the default settings)
 

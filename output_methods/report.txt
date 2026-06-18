@@ -1,0 +1,258 @@
+
+==============================================================================
+STEP 1  -  DATA PREPARATION
+==============================================================================
+Cases analysed: 140   Conditions: AI_CAP, CULT, STRUCT, SIZE, DYN   Outcome: OUT
+
+==============================================================================
+STEP 2  -  CALIBRATION
+==============================================================================
+Calibration diagnostics (prop_at_0.5 must be ~0):
+  variable   min  mean  max prop_in_0.95 prop_out_0.05 prop_at_0.5
+1   AI_CAP 0.001 0.495 1.00        0.250          0.25           0
+2     CULT 0.330 0.560 0.95        0.007          0.00           0
+3   STRUCT 0.330 0.821 0.95        0.593          0.00           0
+4     SIZE 0.012 0.486 1.00        0.250          0.25           0
+5      DYN 0.050 0.648 1.00        0.243          0.00           0
+6      OUT 0.000 0.497 1.00        0.250          0.25           0
+
+==============================================================================
+STEP 3  -  NECESSITY ANALYSIS
+==============================================================================
+Necessary-condition test for the OUTCOME (consistency >= 0.9 flagged):
+   condition consistency coverage   RoN necessary
+1     STRUCT       0.908    0.550 0.326      TRUE
+2        DYN       0.702    0.538 0.540     FALSE
+3       CULT       0.682    0.606 0.666     FALSE
+4       SIZE       0.644    0.659 0.756     FALSE
+5    ~AI_CAP       0.559    0.550 0.685     FALSE
+6     AI_CAP       0.531    0.534 0.686     FALSE
+7      ~CULT       0.528    0.598 0.760     FALSE
+8      ~SIZE       0.453    0.438 0.627     FALSE
+9       ~DYN       0.393    0.556 0.806     FALSE
+10   ~STRUCT       0.211    0.588 0.918     FALSE
+
+Necessary-condition test for the NEGATED outcome:
+   condition consistency coverage   RoN necessary
+1     STRUCT       0.854    0.522 0.313     FALSE
+2        DYN       0.690    0.535 0.538     FALSE
+3      ~SIZE       0.670    0.655 0.733     FALSE
+4       CULT       0.648    0.581 0.652     FALSE
+5      ~CULT       0.561    0.641 0.780     FALSE
+6     AI_CAP       0.548    0.557 0.697     FALSE
+7    ~AI_CAP       0.541    0.538 0.680     FALSE
+8       SIZE       0.425    0.440 0.654     FALSE
+9       ~DYN       0.404    0.578 0.814     FALSE
+10   ~STRUCT       0.264    0.744 0.947     FALSE
+
+==============================================================================
+STEP 4  -  SUFFICIENCY (TRUTH TABLE + SOLUTIONS)
+==============================================================================
+Truth table (outcome):
+
+  OUT: output value
+    n: number of cases in configuration
+ incl: sufficiency inclusion score
+  PRI: proportional reduction in inconsistency
+
+     AI_CAP CULT STRUCT SIZE DYN   OUT    n   incl  PRI  
+24     1     0     1     1    1     1     6   0.774 0.618
+32     1     1     1     1    1     1     5   0.761 0.619
+16     0     1     1     1    1     0     20  0.710 0.605
+30     1     1     1     0    1     0     18  0.584 0.417
+15     0     1     1     1    0     0     14  0.651 0.491
+29     1     1     1     0    0     0     14  0.583 0.431
+ 7     0     0     1     1    0     0     9   0.651 0.460
+13     0     1     1     0    0     0     8   0.520 0.349
+21     1     0     1     0    0     0     7   0.560 0.384
+31     1     1     1     1    0     0     7   0.715 0.588
+22     1     0     1     0    1     0     6   0.586 0.378
+ 6     0     0     1     0    1     0     5   0.518 0.298
+ 8     0     0     1     1    1     0     5   0.691 0.549
+14     0     1     1     0    1     0     4   0.545 0.355
+ 5     0     0     1     0    0     0     3   0.526 0.306
+23     1     0     1     1    0     0     3   0.745 0.615
+17     1     0     0     0    0     0     2   0.565 0.316
+ 9     0     1     0     0    0     0     1   0.511 0.274
+11     0     1     0     1    0     0     1   0.650 0.408
+25     1     1     0     0    0     0     1   0.564 0.301
+26     1     1     0     0    1     0     1   0.581 0.292
+     cases                                                        
+24   139,160,163,50,151,58                                        
+32   42,47,157,14,125                                             
+16   49,15,145,2,128,25,17,26,24,12,30,21,22,54,11,31,127,33,27,23
+30   52,51,56,1,60,28,153,154,29,6,126,57,40,53,41,164,167,146    
+15   115,36,79,170,83,122,97,62,185,104,86,171,75,68              
+29   76,80,112,34,71,106,111,101,184,69,78,35,181,174             
+ 7   124,88,87,110,187,73,107,65,96                               
+13   85,77,20,74,121,188,94,180                                   
+21   5,70,169,114,176,82,194                                      
+31   4,67,61,109,45,105,186                                       
+22   135,130,159,129,140,137                                      
+ 6   142,147,156,3,46                                             
+ 8   48,16,134,32,18                                              
+14   59,155,55,166                                                
+ 5   179,173,177                                                  
+23   168,102,192                                                  
+17   44,19                                                        
+ 9   120                                                          
+11   136                                                          
+25   72                                                           
+26   43                                                           
+
+
+----- COMPLEX solution (OUT) -----
+
+M1: AI_CAP*STRUCT*SIZE*DYN -> OUT
+
+                           inclS   PRI   covS   covU  
+----------------------------------------------------- 
+1  AI_CAP*STRUCT*SIZE*DYN  0.730  0.597  0.219    -   
+----------------------------------------------------- 
+                       M1  0.730  0.597  0.219 
+
+                           cases 
+-------------------------------- 
+1  AI_CAP*STRUCT*SIZE*DYN  139,160,163,50,151,58; 42,47,157,14,125
+-------------------------------- 
+
+
+----- PARSIMONIOUS solution (OUT) -----
+
+M1: AI_CAP*SIZE*DYN -> OUT
+
+                    inclS   PRI   covS   covU  
+---------------------------------------------- 
+1  AI_CAP*SIZE*DYN  0.727  0.595  0.221    -   
+---------------------------------------------- 
+                M1  0.727  0.595  0.221 
+
+                    cases 
+------------------------- 
+1  AI_CAP*SIZE*DYN  139,160,163,50,151,58; 42,47,157,14,125
+------------------------- 
+
+
+----- INTERMEDIATE solution (OUT) -----
+
+From C1P1: 
+
+M1:    AI_CAP*STRUCT*SIZE*DYN -> OUT 
+
+                           inclS   PRI   covS   covU  
+----------------------------------------------------- 
+1  AI_CAP*STRUCT*SIZE*DYN  0.730  0.597  0.219    -   
+----------------------------------------------------- 
+                       M1  0.730  0.597  0.219 
+
+                           cases 
+-------------------------------- 
+1  AI_CAP*STRUCT*SIZE*DYN  139,160,163,50,151,58; 42,47,157,14,125
+-------------------------------- 
+
+
+----- COMPLEX solution (~OUT) -----
+
+M1: ~AI_CAP*~CULT*STRUCT*~SIZE + ~AI_CAP*CULT*~STRUCT*~DYN +
+    AI_CAP*CULT*~STRUCT*~SIZE + AI_CAP*~STRUCT*~SIZE*~DYN -> ~OUT
+
+                               inclS   PRI   covS   covU  
+--------------------------------------------------------- 
+1  ~AI_CAP*~CULT*STRUCT*~SIZE  0.788  0.688  0.241  0.136 
+2   ~AI_CAP*CULT*~STRUCT*~DYN  0.763  0.638  0.119  0.035 
+3   AI_CAP*CULT*~STRUCT*~SIZE  0.814  0.697  0.175  0.045 
+4   AI_CAP*~STRUCT*~SIZE*~DYN  0.804  0.695  0.113  0.005 
+--------------------------------------------------------- 
+                           M1  0.789  0.688  0.385 
+
+                               cases 
+------------------------------------ 
+1  ~AI_CAP*~CULT*STRUCT*~SIZE  179,173,177; 142,147,156,3,46
+2   ~AI_CAP*CULT*~STRUCT*~DYN  120; 136
+3   AI_CAP*CULT*~STRUCT*~SIZE  72; 43
+4   AI_CAP*~STRUCT*~SIZE*~DYN  44,19; 72
+------------------------------------ 
+
+
+----- PARSIMONIOUS solution (~OUT) -----
+
+M1: ~STRUCT + ~AI_CAP*~CULT*~SIZE -> ~OUT
+
+                        inclS   PRI   covS   covU   cases 
+--------------------------------------------------------------------------------- 
+1              ~STRUCT  0.744  0.617  0.264  0.155  120; 136; 44,19; 72; 43 
+2  ~AI_CAP*~CULT*~SIZE  0.788  0.688  0.241  0.132  179,173,177; 142,147,156,3,46 
+--------------------------------------------------------------------------------- 
+                    M1  0.758  0.648  0.396 
+
+
+----- INTERMEDIATE solution (~OUT) -----
+
+From C1P1: 
+
+M1:    CULT*~STRUCT*~DYN + ~AI_CAP*~CULT*STRUCT*~SIZE +
+       AI_CAP*CULT*~STRUCT*~SIZE + AI_CAP*~STRUCT*~SIZE*~DYN -> ~OUT 
+
+                               inclS   PRI   covS   covU  
+--------------------------------------------------------- 
+1           CULT*~STRUCT*~DYN  0.758  0.640  0.179  0.036 
+2  ~AI_CAP*~CULT*STRUCT*~SIZE  0.788  0.688  0.241  0.136 
+3   AI_CAP*CULT*~STRUCT*~SIZE  0.814  0.697  0.175  0.045 
+4   AI_CAP*~STRUCT*~SIZE*~DYN  0.804  0.695  0.113  0.005 
+--------------------------------------------------------- 
+                           M1  0.776  0.672  0.386 
+
+                               cases 
+------------------------------------ 
+1           CULT*~STRUCT*~DYN  120; 136; 72
+2  ~AI_CAP*~CULT*STRUCT*~SIZE  179,173,177; 142,147,156,3,46
+3   AI_CAP*CULT*~STRUCT*~SIZE  72; 43
+4   AI_CAP*~STRUCT*~SIZE*~DYN  44,19; 72
+------------------------------------ 
+
+
+==============================================================================
+STEP 5  -  COMPARISON GRAPHS
+==============================================================================
+Figures saved to output_methods/figures
+
+==============================================================================
+STEP 6  -  SENSITIVITY / ROBUSTNESS
+==============================================================================
+Threshold sensitivity (baseline paths: AI_CAP*SIZE*DYN):
+  incl_cut n_cut n_paths consistency coverage        solution
+1     0.75     1       1       0.727    0.221 AI_CAP*SIZE*DYN
+2     0.80     1       0          NA       NA          <none>
+3     0.85     1       0          NA       NA          <none>
+4     0.75     2       1       0.727    0.221 AI_CAP*SIZE*DYN
+5     0.80     2       0          NA       NA          <none>
+6     0.85     2       0          NA       NA          <none>
+7     0.75     3       1       0.727    0.221 AI_CAP*SIZE*DYN
+8     0.80     3       0          NA       NA          <none>
+9     0.85     3       0          NA       NA          <none>
+  jaccard_vs_baseline identical_to_baseline
+1                   1                  TRUE
+2                  NA                 FALSE
+3                  NA                 FALSE
+4                   1                  TRUE
+5                  NA                 FALSE
+6                  NA                 FALSE
+7                   1                  TRUE
+8                  NA                 FALSE
+9                  NA                 FALSE
+
+Calibration sensitivity (crossover shifts):
+  crossover_shift n_paths consistency coverage        solution
+1            -0.5       0          NA       NA          <none>
+2             0.0       1       0.727    0.221 AI_CAP*SIZE*DYN
+3             0.5       1       0.740    0.240     AI_CAP*SIZE
+  jaccard_vs_baseline identical_to_baseline
+1                  NA                 FALSE
+2                   1                  TRUE
+3                   0                 FALSE
+
+Robustness summary: 33% of threshold settings reproduce the exact baseline paths.
+
+==============================================================================
+DONE
+==============================================================================

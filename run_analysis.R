@@ -16,7 +16,10 @@
 options(stringsAsFactors = FALSE)
 
 # --- Load configuration and modules -----------------------------------------
-source("config.R")
+# The config file can be overridden (e.g. to run the chapter-aligned
+# 5-condition model) via the CONFIG_FILE environment variable; default config.R.
+config_file <- Sys.getenv("CONFIG_FILE", unset = "config.R")
+source(config_file)
 source("R/01_data_prep.R")
 source("R/02_calibration.R")
 source("R/03_necessity.R")
@@ -48,8 +51,10 @@ say(sprintf("Cases analysed: %d   Conditions: %s   Outcome: %s",
 hr("STEP 2  -  CALIBRATION")
 # ============================================================================
 cal <- calibrate_data(dat, config)
-write.csv(cbind(Deal_ID = dat[[config$id_col]], cal),
-          file.path("data", "calibrated_data.csv"), row.names = FALSE)
+# Calibrated-data path tracks the config's data_file so each model writes its own
+# (e.g. calibrated_data.csv vs calibrated_data_methods.csv) rather than clobbering.
+cal_file <- sub("analysis_data", "calibrated_data", config$data_file)
+write.csv(cbind(Deal_ID = dat[[config$id_col]], cal), cal_file, row.names = FALSE)
 diag <- calibration_diagnostics(cal, config)
 write.csv(diag, file.path(config$tab_dir, "calibration_diagnostics.csv"), row.names = FALSE)
 say("Calibration diagnostics (prop_at_0.5 must be ~0):")

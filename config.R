@@ -21,6 +21,7 @@ config <- list(
   sep       = ",",
   decimal   = ".",
   id_col    = "Deal_ID",                   # case identifier
+  dyn_source = "combined",                 # DYN series: "combined" (US+EU) or "US_only"
 
   # ---------------------------------------------------------------------------
   # 2. OUTCOME AND CONDITIONS  (clean names created in 01_data_prep.R)

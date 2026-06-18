@@ -55,28 +55,39 @@ prepare_analysis_data <- function(config) {
   # Rename to the clean names used throughout the pipeline.
   df$CULT  <- df$CULT_calibrated
   df$STRUCT <- df$STRUCT_calibrated
-  df$DYN   <- df$DYN_raw_combined
   df$OUT   <- df$IAG_Primary_2y
   df$SIZE  <- df$SIZE_rel_DealOverRev
+
+  # Industry dynamism has two source series: US-only aggregates (the thesis's
+  # primary measure) and a combined US+European aggregate (a robustness
+  # variant). config$dyn_source selects which one feeds DYN; default combined
+  # for backward compatibility.
+  dyn_col <- if (identical(config$dyn_source, "US_only"))
+    "DYN_raw_US_only" else "DYN_raw_combined"
+  df$DYN <- df[[dyn_col]]
 
   keep <- c("Deal_ID", "Ticker", "Acquiror_Name",
             "AI_CAP", "CULT", "STRUCT", "DYN", "SIZE", "OUT")
   df <- df[, keep]
 
   n_total <- nrow(df)
-  core    <- c("AI_CAP", "CULT", "STRUCT", "DYN", "OUT")
+  # Completeness is judged on the conditions actually used in this run.
+  core    <- c(config$conditions, config$outcome)
   complete <- df[stats::complete.cases(df[, core]), ]
   n_complete <- nrow(complete)
 
-  cat(sprintf("Data prep: %d deals merged; %d with complete outcome + 4 conditions.\n",
-              n_total, n_complete))
+  cat(sprintf("Data prep: %d deals merged; %d complete on outcome + %d conditions (%s); DYN source = %s.\n",
+              n_total, n_complete, length(config$conditions),
+              paste(config$conditions, collapse = ", "), dyn_col))
   missing_report <- sapply(df[, core], function(x) sum(is.na(x)))
   cat("Missing per core variable:\n"); print(missing_report)
 
   dir.create("data", showWarnings = FALSE)
-  write.csv(df,       file.path("data", "analysis_data_all.csv"),   row.names = FALSE)
-  write.csv(complete, file.path("data", "analysis_data.csv"),       row.names = FALSE)
-  cat("Wrote data/analysis_data.csv (complete cases) and data/analysis_data_all.csv (all).\n\n")
+  data_file <- if (!is.null(config$data_file)) config$data_file else "data/analysis_data.csv"
+  all_file  <- sub("\\.csv$", "_all.csv", data_file)
+  write.csv(df,       all_file,  row.names = FALSE)
+  write.csv(complete, data_file, row.names = FALSE)
+  cat(sprintf("Wrote %s (complete cases) and %s (all).\n\n", data_file, all_file))
 
   invisible(complete)
 }
