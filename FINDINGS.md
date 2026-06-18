@@ -12,19 +12,29 @@ models were run side by side (the user chose "build both, compare first"):
 Model **B is faithful to Chapter 3** (five conditions, US-only DYN, p25/p50/p75
 anchors — p10/p50/p75 for DYN, parity nudge for exact-zero growth). Model A is
 retained as a robustness comparison. STRUCT and CULT are theoretically
-calibrated (0.33/0.67/0.95) in both. All 140 complete cases enter both models;
-in B every one of the 32 logically possible configurations is populated and no
-case lands on the 0.5 crossover, so the chapter's calibration design is clean.
+calibrated (0.33/0.67/0.95) in both.
+
+**Sample.** Both models analyse the **identical 140 deals** — the complete-case
+intersection across all datasets. Of 147 merged deals, **7 are dropped solely
+because AI_CAP could not be computed** (Intuit, Shopify, Lightspeed, Edenred,
+Antares Vision, and Thomson Reuters ×2); every other condition and the outcome
+are complete. So the comparison is strictly like-for-like on the same companies.
+In Model B every one of the 32 logically possible configurations is populated and
+no case lands on the 0.5 crossover, so the chapter's calibration design is clean.
 
 ---
 
 ## 1. Headline findings (robust across both models)
 
-1. **Structural integration depth (STRUCT) is a necessary condition for
-   above-industry growth.** Necessity consistency is 0.95 (Model A) and 0.91
-   (Model B), both above the 0.90 threshold, with coverage ≈ 0.55. No other
-   condition (or its negation) is necessary in either model. This is the
-   single most defensible result.
+1. **Structural integration depth (STRUCT) is necessary for above-industry
+   growth (necessity *in kind*), and relative deal size and AI capability are
+   necessary *in degree*.** STRUCT clears the set-theoretic necessity threshold
+   (consistency 0.95 in Model A, 0.91 in Model B; coverage ≈ 0.55). The NCA
+   (necessity-in-degree) test on the raw continuous measures adds that **SIZE
+   (effect size d = 0.30) and AI_CAP (d = 0.20)** impose ceilings on growth —
+   high growth is not reached without a sufficient level of each — while DYN does
+   not (d = 0.04). This in-kind/in-degree combination is the most defensible
+   result and exactly the complementarity Vis & Dul (2018) describe.
 
 2. **Sufficiency for *high* growth is weak and specification-dependent.** No
    configuration combines high consistency with broad coverage. Adding SIZE
@@ -53,8 +63,35 @@ case lands on the 0.5 crossover, so the chapter's calibration design is clean.
 *Note:* DYN's consistency rises markedly from A to B (0.51 → 0.70) because the
 primary DYN series changes from combined to US-only and is recalibrated on
 percentiles. This is exactly why the DYN source must match the chapter — the two
-series tell different stories about dynamism. (NCA, the necessity-in-*degree*
-test the chapter also specifies, is still outstanding — see §6.)
+series tell different stories about dynamism.
+
+### Necessity in degree (NCA, Dul 2016) — on the raw continuous measures
+
+NCA tests whether a condition imposes a *ceiling* on the outcome (an empty
+upper-left corner: high growth is impossible below some level of the condition).
+Effect size *d* ≥ 0.10 is meaningful. Run on the **raw** measures, because
+calibration compresses the tails and flattens the ceiling (on calibrated scores
+every *d* ≈ 0). Model B (5 conditions):
+
+| Condition | NCA *d* (CE-FDH) | Necessary in degree? | Note |
+|-----------|----------------:|:--------------------:|------|
+| **STRUCT** | 0.39 | Yes | 3-level — indicative |
+| **SIZE** | **0.30** | **Yes** | continuous |
+| **AI_CAP** | **0.20** | **Yes** | continuous |
+| CULT | 0.14 | Yes | 3-level — indicative |
+| DYN | 0.04 | No | continuous |
+
+The continuous conditions are the proper in-degree candidates: **SIZE and AI_CAP
+each put a floor under growth** — you do not see high-growth deals at low deal
+size or low AI capability (visible as the empty corners in the ceiling plot).
+STRUCT/CULT take only three levels, so their NCA is indicative and the in-kind
+test above is the primary evidence for them. This is an independent
+implementation of NCA's CE-FDH/CR-FDH ceilings (the `NCA` package cannot be
+installed here — see §7); cross-check against the package before final
+submission.
+
+Figures: `B_nec_xy_STRUCT.png` (set-theoretic necessity XY plot);
+`I_nca_ceiling_OUT.png` (NCA ceiling plot — all conditions, both ceilings).
 
 Figure: `B_nec_xy_STRUCT.png` (necessity XY plot — points cluster below the
 diagonal, the necessity signature).
@@ -153,24 +190,29 @@ Figure: `F_robustness_thresholds.png`. Tables: `sensitivity_thresholds.csv`,
    Greckhamer et al., 2018) and a reason the asymmetric/necessity framing is
    safer than leaning on the positive-outcome sufficiency solution.
 
-### Recommended figures (and what to drop)
-- **Use as headline:** `H_config_chart_*` (Fiss notation — the standard fsQCA
-  results figure), `B_nec_xy_STRUCT` (necessity), `G_venn_*` (coverage /
-  equifinality), `F_robustness_thresholds` (sensitivity).
-- **Use as support:** `A_suff_xy_*` (per-path sufficiency).
+### Recommended figures (grounded in field practice)
+Conventions confirmed against Fiss (2011), Pappas & Woodside (2021) and the
+Campbell et al. (2016) precedent: the configuration chart with large/small
+circles (core/peripheral), ⊗ for absent and blank for "don't care" is the
+standard headline display.
+- **Headline:** `H_config_chart_*` (Fiss notation), `I_nca_ceiling_OUT`
+  (NCA — necessity in degree), `B_nec_xy_STRUCT` (set-theoretic necessity),
+  `G_venn_*` (coverage / equifinality), `F_robustness_thresholds` (sensitivity).
+- **Support:** `A_suff_xy_*` (per-path sufficiency).
 - **Appendix only:** `C_path_comparison_*`, `D_solution_types_*`,
-  `E_truthtable_heatmap_*` (useful but not headline).
-- **Still missing (chapter requires it):** NCA ceiling plots.
+  `E_truthtable_heatmap_*`.
 
 ---
 
 ## 7. Outstanding items before final write-up
 
-- **NCA (necessity-in-degree).** Chapter 3.5 specifies NCA (ceiling lines
-  ce_fdh/cr_fdh, effect size d ≥ 0.10) alongside fsQCA. The `NCA` R package
-  could not be installed in this environment (CRAN is blocked and the sandbox
-  declined fetching it from a mirror). This needs the package added to the
-  setup before NCA can be reported — a decision for the user.
+- **NCA — now implemented "around" the package.** Chapter 3.5 specifies NCA
+  (ce_fdh/cr_fdh ceilings, effect size d ≥ 0.10). The `NCA` package cannot be
+  installed here (CRAN blocked; sandbox declined a mirror fetch), so
+  `R/07_nca.R` computes the CE-FDH and CR-FDH ceilings and effect sizes
+  directly. Results are in `necessity_nca.csv` and `I_nca_ceiling_*`.
+  **Cross-check against the official `NCA` package before submission** — the
+  numbers should match, but this is an independent implementation.
 - **Choice of primary model (4 vs 5 conditions).** This determines every number
   in the Results chapter; the comparison above is the input to that decision.
 - **Directional expectations for SIZE/DYN.** Model B treats both contextual

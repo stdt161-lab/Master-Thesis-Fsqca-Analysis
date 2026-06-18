@@ -45,6 +45,22 @@ Necessary-condition test for the NEGATED outcome:
 9       ~DYN       0.404    0.578 0.814     FALSE
 10   ~STRUCT       0.264    0.744 0.947     FALSE
 
+NCA necessity-in-degree (effect size d; raw measures, d>=0.10 meaningful):
+  condition levels d_ce_fdh d_cr_fdh necessary_in_degree
+1    STRUCT      3    0.386    0.224       yes (d>=0.10)
+2      SIZE    140    0.298    0.232       yes (d>=0.10)
+3    AI_CAP    105    0.203    0.178       yes (d>=0.10)
+4      CULT      3    0.138    0.164       yes (d>=0.10)
+5       DYN     13    0.040    0.035                  no
+
+NCA necessity-in-degree for the NEGATED outcome:
+  condition levels d_ce_fdh d_cr_fdh necessary_in_degree
+1    STRUCT      3    0.013    0.016                  no
+2      CULT      3    0.004    0.018                  no
+3    AI_CAP    105    0.003    0.002                  no
+4      SIZE    140    0.001    0.003                  no
+5       DYN     13    0.001    0.009                  no
+
 ==============================================================================
 STEP 4  -  SUFFICIENCY (TRUTH TABLE + SOLUTIONS)
 ==============================================================================

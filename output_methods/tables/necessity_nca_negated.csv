@@ -1,0 +1,6 @@
+"condition","levels","d_ce_fdh","d_cr_fdh","necessary_in_degree"
+"STRUCT",3,0.013,0.016,"no"
+"CULT",3,0.004,0.018,"no"
+"AI_CAP",105,0.003,0.002,"no"
+"SIZE",140,0.001,0.003,"no"
+"DYN",13,0.001,0.009,"no"

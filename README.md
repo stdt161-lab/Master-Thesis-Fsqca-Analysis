@@ -54,6 +54,7 @@ R/
   04_sufficiency.R       # truth table + complex/parsimonious/intermediate solutions
   05_plots.R             # graphs: XY plots, bars, heatmaps, Venn, Fiss config chart
   06_sensitivity.R       # robustness: threshold grid + calibration shifts
+  07_nca.R               # Necessary Condition Analysis (in degree; Dul 2016)
 data/
   raw/                   # the six source CSVs
   analysis_data.csv      # merged, complete-case dataset (generated)
@@ -76,7 +77,8 @@ CONFIG_FILE=config_methods.R Rscript run_analysis.R # 5-condition, chapter-align
 
 **Tables** (`output/tables/`)
 - `calibration_diagnostics.csv` — checks no case is stranded at fuzzy 0.5
-- `necessity_outcome.csv`, `necessity_negated.csv` — consistency, coverage, RoN
+- `necessity_outcome.csv`, `necessity_negated.csv` — fsQCA necessity-in-kind (consistency, coverage, RoN)
+- `necessity_nca.csv`, `necessity_nca_negated.csv` — NCA necessity-in-degree (effect size d, CE-FDH/CR-FDH)
 - `truth_table_outcome.csv` — every configuration with consistency & PRI
 - `solution_{complex,parsimonious,intermediate}_{OUT,NEGOUT}.{csv,txt}`
 - `sensitivity_thresholds.csv`, `sensitivity_calibration.csv`
@@ -90,6 +92,7 @@ CONFIG_FILE=config_methods.R Rscript run_analysis.R # 5-condition, chapter-align
 - `F_robustness_thresholds.png` — solution stability across `incl.cut` × `n.cut`
 - `G_venn_*` — Venn/set-overlap diagram of the sufficient paths vs the outcome (cases per region, fuzzy membership > 0.5)
 - `H_config_chart_*` — **configuration chart in Fiss (2011) notation** (the headline fsQCA results figure: large = core, small = peripheral, ⊗ = absent, blank = "don't care")
+- `I_nca_ceiling_*` — **NCA ceiling plots** (necessity in degree; CE-FDH step + CR-FDH line, effect size *d* per condition)
 
 ## Headline results (with the default settings)
 

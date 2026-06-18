@@ -26,6 +26,7 @@ source("R/03_necessity.R")
 source("R/04_sufficiency.R")
 source("R/05_plots.R")
 source("R/06_sensitivity.R")
+source("R/07_nca.R")
 
 set.seed(config$seed)
 dir.create(config$tab_dir, recursive = TRUE, showWarnings = FALSE)
@@ -72,6 +73,24 @@ if (!is.null(nec$negated)) {
   write.csv(nec$negated, file.path(config$tab_dir, "necessity_negated.csv"), row.names = FALSE)
   say("\nNecessary-condition test for the NEGATED outcome:")
   say(paste(capture.output(print(nec$negated)), collapse = "\n"))
+}
+
+# Necessity in DEGREE (NCA, Dul 2016) on the raw measures -- complements the
+# in-kind test above. Runs only if config$run_nca is TRUE.
+if (isTRUE(config$run_nca)) {
+  nca <- run_nca(dat, config, outcome = config$outcome)
+  write.csv(nca$table, file.path(config$tab_dir, "necessity_nca.csv"), row.names = FALSE)
+  plot_nca(nca, config, prefix = "OUT")
+  say("\nNCA necessity-in-degree (effect size d; raw measures, d>=0.10 meaningful):")
+  say(paste(capture.output(print(nca$table)), collapse = "\n"))
+  if (isTRUE(config$analyse_negation)) {
+    nca_neg <- run_nca(dat, config, outcome = config$outcome, negate_outcome = TRUE)
+    write.csv(nca_neg$table, file.path(config$tab_dir, "necessity_nca_negated.csv"),
+              row.names = FALSE)
+    plot_nca(nca_neg, config, prefix = "~OUT")
+    say("\nNCA necessity-in-degree for the NEGATED outcome:")
+    say(paste(capture.output(print(nca_neg$table)), collapse = "\n"))
+  }
 }
 
 # ============================================================================

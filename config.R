@@ -101,6 +101,7 @@ config <- list(
   # ---------------------------------------------------------------------------
   necessity_consistency_cut = 0.90,
   necessity_coverage_cut    = 0.50,
+  run_nca                   = TRUE,   # also run Necessary Condition Analysis (in degree)
 
   # ---------------------------------------------------------------------------
   # 6. SENSITIVITY / ROBUSTNESS RANGES
