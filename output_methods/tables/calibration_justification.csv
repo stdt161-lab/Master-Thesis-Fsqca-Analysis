@@ -1,0 +1,7 @@
+"Condition","Measure","Calibration","Anchors (in/cross/out)"
+"Industry-adjusted growth","Industry-adjusted 2y revenue CAGR","Direct (percentile)","0.0838 /    0 / -0.0715"
+"AI capability","0.40*AIE_z + 0.60*AIS_z, within-sector","Direct (percentile)","0.533 / -0.0191 / -0.605"
+"Cultural integration effort","Strong/moderate/weak effort","Theoretical (0.95/0.67/0.33)","0.95 / 0.67 / 0.33"
+"Structural integration","Absorption/symbiosis/preservation","Theoretical (0.95/0.67/0.33)","0.95 / 0.67 / 0.33"
+"Relative deal size","Deal value / acquirer revenue (Y0)","Direct (percentile)","0.882 / 0.372 / 0.124"
+"Industry dynamism","Dess-Beard instability index (US)","Direct (percentile, p10/50/75)","0.000571 / 0.000402 / 0.000261"

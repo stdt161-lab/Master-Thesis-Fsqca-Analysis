@@ -46,7 +46,8 @@ install.packages(c("QCA", "ggplot2"))
 config.R                 # current 4-condition model (AI_CAP, CULT, STRUCT, DYN)
 config_methods.R         # chapter-aligned 5-condition model (adds SIZE; see FINDINGS.md)
 run_analysis.R           # master script; honours CONFIG_FILE=<config> to switch models
-FINDINGS.md              # results write-up + 4-vs-5-condition comparison (read this)
+RESULTS.md               # thesis-ready results write-up (primary 5-condition model)
+FINDINGS.md              # 4-vs-5-condition comparison (methodological)
 R/
   01_data_prep.R         # merge the 6 raw files -> data/analysis_data.csv
   02_calibration.R       # calibration into fuzzy sets (fixed OR percentile anchors)
@@ -55,6 +56,7 @@ R/
   05_plots.R             # graphs: XY plots, bars, heatmaps, Venn, Fiss config chart
   06_sensitivity.R       # robustness: threshold grid + calibration shifts
   07_nca.R               # Necessary Condition Analysis (in degree; Dul 2016)
+  08_tables.R            # publication tables: config (Fiss), calibration, salient
 data/
   raw/                   # the six source CSVs
   analysis_data.csv      # merged, complete-case dataset (generated)
@@ -82,6 +84,9 @@ CONFIG_FILE=config_methods.R Rscript run_analysis.R # 5-condition, chapter-align
 - `truth_table_outcome.csv` — every configuration with consistency & PRI
 - `solution_{complex,parsimonious,intermediate}_{OUT,NEGOUT}.{csv,txt}`
 - `sensitivity_thresholds.csv`, `sensitivity_calibration.csv`
+- `config_solution_table.{md,tex,csv}` — **the configuration table in Fiss notation** (paste-ready)
+- `calibration_justification.csv` — every condition: measure, method, anchors
+- `salient_conditions.csv` — necessity in kind + in degree + # sufficient paths
 
 **Figures** (`output/figures/`)
 - `A_suff_xy_*` — sufficiency XY plots (one per path; points above the diagonal support sufficiency)

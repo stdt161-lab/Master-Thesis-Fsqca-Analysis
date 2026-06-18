@@ -1,0 +1,7 @@
+"configuration","outcome","AI_CAP","CULT","STRUCT","DYN","consistency","raw_coverage","unique_coverage","tech_cases","financial_cases"
+"G1","High growth","●","●","●","⊗",0.762,0.418,0.231,25,0
+"G2","High growth","⊗","●","●","●",0.769,0.373,0.186,2,21
+"A1","Absence of growth","●","","","●",0.771,0.365,0.066,0,25
+"A2","Absence of growth","","⊗","•","",0.747,0.632,0.142,35,9
+"A3","Absence of growth","","•","⊗","",0.867,0.293,0.009,3,1
+"A4","Absence of growth","⊗","•","","⊗",0.755,0.401,0.059,24,0

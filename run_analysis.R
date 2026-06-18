@@ -27,6 +27,7 @@ source("R/04_sufficiency.R")
 source("R/05_plots.R")
 source("R/06_sensitivity.R")
 source("R/07_nca.R")
+source("R/08_tables.R")
 
 set.seed(config$seed)
 dir.create(config$tab_dir, recursive = TRUE, showWarnings = FALSE)
@@ -77,6 +78,7 @@ if (!is.null(nec$negated)) {
 
 # Necessity in DEGREE (NCA, Dul 2016) on the raw measures -- complements the
 # in-kind test above. Runs only if config$run_nca is TRUE.
+nca <- NULL
 if (isTRUE(config$run_nca)) {
   nca <- run_nca(dat, config, outcome = config$outcome)
   write.csv(nca$table, file.path(config$tab_dir, "necessity_nca.csv"), row.names = FALSE)
@@ -149,6 +151,12 @@ if (!is.null(suf$solutions_neg)) {
     write_solution(sol, st, "NEGOUT")
   }
 }
+
+# Publication-quality results tables (configuration table, calibration
+# justification, salient conditions, sector breakdown) -> Markdown/LaTeX/CSV.
+tabs <- build_all_tables(suf, nec, nca, cal, dat, config)
+say("\nConfiguration solution table (Fiss notation):")
+say(paste(readLines(file.path(config$tab_dir, "config_solution_table.md")), collapse = "\n"))
 
 # ============================================================================
 hr("STEP 5  -  COMPARISON GRAPHS")

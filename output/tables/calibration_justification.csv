@@ -1,0 +1,6 @@
+"Condition","Measure","Calibration","Anchors (in/cross/out)"
+"Industry-adjusted growth","Industry-adjusted 2y revenue CAGR","Direct (percentile)","0.205 / 0.0005 / -0.144"
+"AI capability","0.40*AIE_z + 0.60*AIS_z, within-sector","Direct (percentile)","   1 /    0 /   -1"
+"Cultural fit","Strong/moderate/weak effort","Theoretical (0.95/0.67/0.33)","0.95 / 0.67 / 0.33"
+"Integration structure","Absorption/symbiosis/preservation","Theoretical (0.95/0.67/0.33)","0.95 / 0.67 / 0.33"
+"Environmental dynamism","Dess-Beard instability index (US)","Direct (percentile, p10/50/75)","0.0015 / 0.000445 / 0.00025"
