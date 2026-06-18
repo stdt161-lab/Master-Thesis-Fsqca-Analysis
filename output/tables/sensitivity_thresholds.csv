@@ -1,0 +1,13 @@
+"incl_cut","n_cut","n_paths","consistency","coverage","solution","jaccard_vs_baseline","identical_to_baseline"
+0.72,1,2,0.741,0.604,"AI_CAP*CULT*STRUCT*~DYN + ~AI_CAP*CULT*STRUCT*DYN",1,TRUE
+0.75,1,2,0.741,0.604,"AI_CAP*CULT*STRUCT*~DYN + ~AI_CAP*CULT*STRUCT*DYN",1,TRUE
+0.78,1,0,NA,NA,"<none>",NA,FALSE
+0.8,1,0,NA,NA,"<none>",NA,FALSE
+0.72,2,2,0.732,0.604,"AI_CAP*CULT*~DYN + ~AI_CAP*CULT*DYN",0,FALSE
+0.75,2,2,0.732,0.604,"AI_CAP*CULT*~DYN + ~AI_CAP*CULT*DYN",0,FALSE
+0.78,2,0,NA,NA,"<none>",NA,FALSE
+0.8,2,0,NA,NA,"<none>",NA,FALSE
+0.72,3,2,0.732,0.604,"AI_CAP*CULT*~DYN + ~AI_CAP*CULT*DYN",0,FALSE
+0.75,3,2,0.732,0.604,"AI_CAP*CULT*~DYN + ~AI_CAP*CULT*DYN",0,FALSE
+0.78,3,0,NA,NA,"<none>",NA,FALSE
+0.8,3,0,NA,NA,"<none>",NA,FALSE

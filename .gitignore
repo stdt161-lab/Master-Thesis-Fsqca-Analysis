@@ -1,0 +1,9 @@
+# R session artefacts
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# OS noise
+.DS_Store
+Thumbs.db

@@ -1,0 +1,4 @@
+"crossover_shift","n_paths","consistency","coverage","solution","jaccard_vs_baseline","identical_to_baseline"
+-0.5,2,0.706,0.969,"AI_CAP + STRUCT",0,FALSE
+0,2,0.741,0.604,"AI_CAP*CULT*STRUCT*~DYN + ~AI_CAP*CULT*STRUCT*DYN",1,TRUE
+0.5,0,NA,NA,"<none>",NA,FALSE
