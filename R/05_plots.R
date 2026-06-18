@@ -7,6 +7,7 @@
 #   C. Bar chart comparing consistency & coverage of paths  -> "best path" view
 #   D. Comparison of the three solution types               -> complex/pars/interm
 #   E. Truth-table heatmap                                  -> configuration map
+#   G. Venn diagram of sufficient paths vs the outcome      -> set overlap / coverage
 # All numbers come straight from the QCA objects so the graphs match the tables.
 # =============================================================================
 
@@ -170,6 +171,59 @@ plot_truth_table_heatmap <- function(tt, config, prefix = "OUT") {
 }
 
 # ----------------------------------------------------------------------------
+# G. Venn diagram: crisp set membership in each sufficient path vs the outcome.
+#    A case is counted in a path if its fuzzy membership in that path's
+#    prime-implicant score exceeds 0.5, and in the outcome set if its outcome
+#    membership exceeds 0.5. The overlaps make coverage and the joint
+#    explanatory reach of the configurations visible at a glance.
+# ----------------------------------------------------------------------------
+plot_solution_venn <- function(sol, outcome_vec, config, prefix = "OUT") {
+  if (!requireNamespace("venn", quietly = TRUE)) {
+    message("Package 'venn' not available - skipping Venn diagram for ", prefix)
+    return(invisible(NULL))
+  }
+  pims <- sol$pims
+  if (is.null(pims) || ncol(pims) == 0) return(invisible(NULL))
+
+  ids   <- seq_len(nrow(pims))
+  exprs <- colnames(pims)
+  sets  <- list()
+  for (j in seq_len(ncol(pims)))
+    sets[[ sprintf("Path %d", j) ]] <- ids[pims[, j] > 0.5]
+
+  # Keep the set name short so it does not run off the canvas; the full outcome
+  # meaning goes in the subtitle below.
+  out_lab <- if (prefix == "OUT") "Outcome" else "~Outcome"
+  sets[[out_lab]] <- ids[outcome_vec > 0.5]
+
+  # venn supports up to 7 sets; cap defensively.
+  if (length(sets) > 7) sets <- sets[seq_len(7)]
+
+  out_desc <- if (prefix == "OUT")
+    config$labels[[config$outcome]]
+  else
+    paste0("NOT ", config$labels[[config$outcome]])
+
+  fname <- file.path(config$fig_dir, sprintf("G_venn_%s.png", prefix))
+  .png_open(fname, w = 8, h = 8, dpi = config$fig_dpi)
+  op <- graphics::par(mar = c(7, 3, 4, 3))
+  on.exit({ graphics::par(op); grDevices::dev.off() }, add = TRUE)
+  venn::venn(sets, ilabels = "counts", zcolor = "style",
+             box = FALSE, opacity = 0.4, ggplot = FALSE, cexsn = 1.0, cexil = 1.1)
+  graphics::title(
+    main = sprintf("Set overlap of sufficient paths and outcome (%s)", prefix))
+  # Decode the short set labels and state the outcome / case count beneath the
+  # figure, on separate lines so they do not overlap.
+  legend_lines <- paste0("Path ", seq_along(exprs), " = ", exprs)
+  graphics::mtext(paste(legend_lines, collapse = "      "),
+                  side = 1, line = 3.5, cex = 0.85)
+  graphics::mtext(sprintf("Outcome = %s.  Counts = cases per region with fuzzy membership > 0.5;  n = %d",
+                          out_desc, nrow(pims)),
+                  side = 1, line = 5.0, cex = 0.8)
+  invisible(sets)
+}
+
+# ----------------------------------------------------------------------------
 # Orchestrator for all graphs.
 # ----------------------------------------------------------------------------
 make_all_plots <- function(cal, suf, nec, config) {
@@ -183,6 +237,7 @@ make_all_plots <- function(cal, suf, nec, config) {
   plot_path_comparison(suf$solutions[[headline]], config, prefix = "OUT")
   plot_solution_types(suf$solutions, out_vec, config, prefix = "OUT")
   plot_truth_table_heatmap(suf$truth_table, config, prefix = "OUT")
+  plot_solution_venn(suf$solutions[[headline]], out_vec, config, prefix = "OUT")
 
   # Outcome negated
   if (isTRUE(config$analyse_negation) && !is.null(suf$solutions_neg)) {
@@ -191,6 +246,7 @@ make_all_plots <- function(cal, suf, nec, config) {
     plot_path_comparison(suf$solutions_neg[[headline]], config, prefix = "~OUT")
     plot_solution_types(suf$solutions_neg, neg_vec, config, prefix = "~OUT")
     plot_truth_table_heatmap(suf$truth_table_neg, config, prefix = "~OUT")
+    plot_solution_venn(suf$solutions_neg[[headline]], neg_vec, config, prefix = "~OUT")
   }
   cat("Figures written to", config$fig_dir, "\n")
 }

@@ -50,7 +50,7 @@ R/
   02_calibration.R       # direct-method calibration into fuzzy sets + diagnostics
   03_necessity.R         # necessary-condition analysis (outcome & negation)
   04_sufficiency.R       # truth table + complex/parsimonious/intermediate solutions
-  05_plots.R             # comparison graphs (XY plots, bar charts, heatmaps)
+  05_plots.R             # comparison graphs (XY plots, bar charts, heatmaps, Venn)
   06_sensitivity.R       # robustness: threshold grid + calibration shifts
 data/
   raw/                   # the six source CSVs
@@ -78,6 +78,7 @@ output/
 - `D_solution_types_*` — complex vs parsimonious vs intermediate fit
 - `E_truthtable_heatmap_*` — configuration map coloured by membership
 - `F_robustness_thresholds.png` — solution stability across `incl.cut` × `n.cut`
+- `G_venn_*` — Venn/set-overlap diagram of the sufficient paths vs the outcome (cases per region, fuzzy membership > 0.5)
 
 ## Headline results (with the default settings)
 
